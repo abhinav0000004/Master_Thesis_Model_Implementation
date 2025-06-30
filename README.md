@@ -94,11 +94,13 @@ If you face any errors:
    - The results are saved directly in the Data folder.
    - Individual Action Files: For each action, an individual file is created that contains the computed angles.
    - Consolidated Files: Two consolidated files are created:
-   - Ground_Truth_Angles_Processed/Model_Angles_Processed: Contains data processed from MotionBERT's output, where the first frame's data has been subtracted from the rest of the frames in each action sequence to reduce initial bias.
+   - Ground_Truth_Angles_Processed/Model_Angles_Processed: Contains data processed from Model's output, where the first frame's data has been subtracted from the rest of the frames in each action sequence to reduce initial bias.
    - Ground_Truth_Angles/Model_Angles: Absolute Angles.
 
 ### 6. Evaluate MPJAE
-   - Run `Calculate_MPJAE.py` to calculate the Mean Per Joint Angle Error (MPJAE) between ground truth and MotionBERT's predicted results. You can choose whether you want to use processed angles or absolute angles and modify the code accordingly (For thesis I used processed angles). The output will be stored in the Data folder in Excel format.
+   - Run `Calculate_MPJAE.py` to calculate the Mean Per Joint Angle Error (MPJAE) between ground truth and Model's predicted results. You can choose whether you want to use processed angles or absolute angles and modify the code accordingly (For thesis I used processed angles). The output will be stored in the Data folder in Excel format.
+
+**NOTE**: All five models share a similar flow.
 ---
 
 ## 🙏 Acknowledgements
@@ -110,8 +112,6 @@ Special thanks to the authors and repositories that made this project possible:
 - MHFormer: https://github.com/Vegetebird/MHFormer
 - MotionAGFormer: https://github.com/TaatiTeam/MotionAGFormer
 - PoseFormerV2: https://github.com/QitaoZhao/PoseFormerV2
-
-**NOTE**: All five models share a similar flow.
 ---
 
 ## 📜 License
