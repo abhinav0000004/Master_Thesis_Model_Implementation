@@ -1,0 +1,52 @@
+import pandas as pd
+import os
+from openpyxl import load_workbook
+
+# Load the Excel files
+ground_truth_path = 'Data\Ground Truth Calculated Angles\Ground_Truth_Angles_Processed.xlsx'
+calculated_path = 'Data\Model Calculated Angles\Model_Angles_Processed.xlsx'
+output_path = 'Data\MPJAE.xlsx'
+
+# Load the datasets
+ground_truth_df = pd.read_excel(ground_truth_path, engine='openpyxl')
+calculated_df = pd.read_excel(calculated_path, engine='openpyxl')
+
+# Ensure matching column names for merge
+ground_truth_df.rename(columns=lambda x: x.strip().lower(), inplace=True)
+calculated_df.rename(columns=lambda x: x.strip().lower(), inplace=True)
+
+# Normalize case for merge columns
+merge_columns = ["subject", "action", "variation", "camera", "frame"]
+for col in merge_columns:
+    ground_truth_df[col] = ground_truth_df[col].astype(str).str.lower()
+    calculated_df[col] = calculated_df[col].astype(str).str.lower()
+
+# Merge the two dataframes on common identifiers
+merged_df = pd.merge(ground_truth_df, calculated_df, on=merge_columns, suffixes=("_gt", "_calc"))
+
+# Ensure angle columns are numeric
+angle_columns = [col for col in ground_truth_df.columns if col not in merge_columns]
+for col in angle_columns:
+    merged_df[f"{col}_gt"] = pd.to_numeric(merged_df[f"{col}_gt"], errors='coerce')
+    merged_df[f"{col}_calc"] = pd.to_numeric(merged_df[f"{col}_calc"], errors='coerce')
+
+# Calculate the modulus of the difference for each angle
+for col in angle_columns:
+    gt_col = f"{col}_gt"
+    calc_col = f"{col}_calc"
+    merged_df[f"mod_diff_{col}"] = abs(merged_df[gt_col] - merged_df[calc_col])
+
+# Calculate MPJAE for each frame
+merged_df["MPJAE"] = merged_df[[f"mod_diff_{col}" for col in angle_columns]].mean(axis=1)
+
+# Select relevant columns for output
+output_columns = merge_columns + [f"mod_diff_{col}" for col in angle_columns] + ["MPJAE"]
+result_df = merged_df[output_columns]
+
+# Save the result to a new Excel file or sheet
+if os.path.exists(output_path):
+    with pd.ExcelWriter(output_path, engine="openpyxl", mode="a") as writer:
+        result_df.to_excel(writer, sheet_name="model", index=False)
+else:
+    with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
+        result_df.to_excel(writer, sheet_name="model", index=False)
