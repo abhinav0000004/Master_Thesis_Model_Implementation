@@ -24,7 +24,7 @@ def process_file(file_path, output_folder):
     subject, action, variation, camera = file_name.split('_')[:4]
     camera_number = int(camera[1])  # Extract camera number
     
-    # Load NPY data
+    # Load NPZ data
     data = np.load(file_path)
     arr = data[data.files[0]]  # Assuming single array
     
@@ -248,7 +248,7 @@ groundtruth_input_json_folder = r"Data\Ground Truth"
 groundtruth_output_excel_folder = r"Data\Ground Truth Calculated Angles" 
 groundtruth_output_file = r"Data\Ground Truth Calculated Angles\Ground_Truth.xlsx"   # Base name for GroundTruth output files
 
-# Process all NPY files
+# Process all NPZ files
 process_all_files(model_input_folder, model_output_excel_folder)
 
 # Consolidate all Excel files
