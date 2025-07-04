@@ -81,8 +81,8 @@ python model_name/demo/vis.py
 ```
 
 This will generate:
-- 2D keypoints: `demo/output/xxx_2D.npz`
-- 3D keypoints: `demo/output/xxx_3D.npz`
+- 2D keypoints: `demo/output/videoName/xxx_2D.npz`
+- 3D keypoints: `demo/output/videoName/xxx_3D.npz`
 
 If you face any errors:
 - Double-check folder structure and naming
